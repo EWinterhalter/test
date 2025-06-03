@@ -1,0 +1,25 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches: [ develop ]
+  repository_dispatch:
+    types: [submodule-updated]
+
+env:
+  ENVIRONMENT: development
+  REGISTRY: ghcr.io
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - run: |
+          git submodule update --remote --merge
+          git commit -am "update submodules"
+          git push
+          
