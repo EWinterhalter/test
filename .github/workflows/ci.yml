@@ -1,19 +1,24 @@
-name: Deploy to Development
+name: Update Submodules & Trigger CI/CD
 
 on:
   repository_dispatch:
-    types: [submodule-updated]
-    
+    types: [update_submodules]
+
 jobs:
-  update-submodules:
+  update-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout SEI
+        uses: actions/checkout@v3
         with:
-          submodules: 'recursive'
+          submodules: true
+          token: ${{ secrets.GH_TOKEN }}
 
-      - run: |
+      - name: Update submodules
+        run: |
           git submodule update --remote --merge
-          git commit -am "update submodules"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Update submodules to latest"
           git push
-          
