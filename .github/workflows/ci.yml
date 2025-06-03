@@ -1,15 +1,9 @@
 name: Deploy to Development
 
 on:
-  push:
-    branches: [ develop ]
   repository_dispatch:
     types: [submodule-updated]
-
-env:
-  ENVIRONMENT: development
-  REGISTRY: ghcr.io
-
+    
 jobs:
   update-submodules:
     runs-on: ubuntu-latest
